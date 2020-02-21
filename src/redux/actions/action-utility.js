@@ -1,8 +1,7 @@
 // write a function that generates an API based action when provided with a base action name
 
-import {SAVE_TODO, UPDATE_TODO, DELETE_TODO, FETCH_TODOS} from "../action-types";
+import {SAVE_TODO, UPDATE_TODO, DELETE_TODO, DELETE_ALL_TODOS, FETCH_TODOS} from "../action-types";
 import {TODOS_URL} from "../../utils/constants";
-import {fetchTodosFailure, fetchTodosStart, fetchTodosSuccess} from "./actions";
 
 function generateAPIAction(inputs) {
   const {
@@ -78,4 +77,10 @@ export const deleteTodo = generateAPIAction({
   actionType: DELETE_TODO,
   url: TODOS_URL,
   method: 'DELETE'
+});
+
+export const deleteAllTodos = generateAPIAction({
+    actionType: DELETE_ALL_TODOS,
+    url: TODOS_URL,
+    method: 'DELETE'
 });
