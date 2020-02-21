@@ -6,7 +6,7 @@ import {dispatchfetchTodos} from "./redux/actions/actions";
 import {connect} from 'react-redux';
 import Todo from './todo';
 import get from 'lodash/get';
-import {deleteTodo} from "./redux/actions/action-utility";
+import {deleteTodo, fetchTodos} from "./redux/actions/action-utility";
 
 class App extends Component {
   state = {
@@ -49,7 +49,12 @@ class App extends Component {
   };
 
   handleRemove = id => {
-    this.props.dispatch(deleteTodo(id));
+    this.props.dispatch(
+      deleteTodo(id, undefined, () => {
+        // code will be executed if the remove is successful
+        this.props.dispatch(fetchTodos)
+      })
+    );
   };
 
   clearComplete = () => {

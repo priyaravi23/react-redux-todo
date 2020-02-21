@@ -13,7 +13,7 @@ function generateAPIAction(inputs) {
   /**
    * @desc This function will behave as the action
    * */
-  return function (relativePath, bodyData) {
+  return function (relativePath, bodyData, successCb, failureCb) {
     // Generate params for the API call
     const url = `${url}${relativePath ? '/' + relativePath : ''}`;
     const fetchConfig = {
@@ -36,18 +36,21 @@ function generateAPIAction(inputs) {
                 type: `${actionName}_SUCCESS`,
                 data
               });
+              successCb && successCb(data);
             });
           } else {
             dispatch({
               type: `${actionName}_FAILURE`,
               err: response
             });
+            failureCb && failureCb(response);
           }
         }).catch(err => {
         dispatch({
           type: `${actionName}_FAILURE`,
           err
         });
+        failureCb && failureCb(err);
       });
     };
   }
