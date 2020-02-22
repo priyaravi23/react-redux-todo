@@ -31,7 +31,7 @@ export function todos(prevState = DEFAULT_TODOS_STATE, action) {
       return {
         fetchInProgress: false,
         err: null,
-        todos: keyBy(action.todos, 'id')
+        todos: keyBy(action.data, 'id')
       };
     case FETCH_TODOS_FAILURE:
       return {

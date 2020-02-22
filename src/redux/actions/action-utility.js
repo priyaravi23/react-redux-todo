@@ -6,47 +6,54 @@ import {TODOS_URL} from "../../utils/constants";
 function generateAPIAction(inputs) {
   const {
     url,
-    actionName,
+    actionType,
     method
   } = inputs;
   /**
    * @desc This function will behave as the action
+   * @param {String} relativePath path to be added to the base url
+   * @param {Object} bodyData Data for POST, PUT etc
+   * @param {Function} successCb Function to be invoked upon success
+   * @param {Function} failureCb Function to be invoked upon failure
    * */
   return function (relativePath, bodyData, successCb, failureCb) {
     // Generate params for the API call
-    const url = `${url}${relativePath ? '/' + relativePath : ''}`;
+    const completeUrl = `${url}${relativePath ? '/' + relativePath : ''}`;
     const fetchConfig = {
       method
     };
     if (typeof bodyData !== 'undefined') {
-      fetchConfig.body = JSON.stringify(bodyData)
+      fetchConfig.body = JSON.stringify(bodyData);
+      fetchConfig.headers = {
+        'Content-Type': 'application/json'
+      };
     }
 
     // Return the function to be used by thunk.
     return (dispatch) => {
       dispatch({
-        type: actionName
+        type: actionType
       });
-      fetch(url, fetchConfig)
+      fetch(completeUrl, fetchConfig)
         .then(response => {
           if (response.ok) {
             response.json().then(data => {
               dispatch({
-                type: `${actionName}_SUCCESS`,
+                type: `${actionType}_SUCCESS`,
                 data
               });
               successCb && successCb(data);
             });
           } else {
             dispatch({
-              type: `${actionName}_FAILURE`,
+              type: `${actionType}_FAILURE`,
               err: response
             });
             failureCb && failureCb(response);
           }
         }).catch(err => {
         dispatch({
-          type: `${actionName}_FAILURE`,
+          type: `${actionType}_FAILURE`,
           err
         });
         failureCb && failureCb(err);

@@ -1,18 +1,17 @@
-import React, {Component, useState} from 'react';
+import React, {Component} from 'react';
 import {BrowserRouter as Router, Link} from 'react-router-dom';
 import uuid from 'uuid';
 import './App.css';
 import {dispatchfetchTodos} from "./redux/actions/actions";
 import {connect} from 'react-redux';
 import Todo from './todo';
-import get from 'lodash/get';
 import {saveTodo, deleteTodo, deleteAllTodos, fetchTodos, updateTodo} from "./redux/actions/action-utility";
 
 class App extends Component {
   state = {
     todos: [],
-    currentTodo: "",
-    filter: 'all'
+    filter: 'all',
+    todoText: ''
   };
 
   componentDidMount() {
@@ -27,20 +26,24 @@ class App extends Component {
     });
   };
 
-  handleTodoChange = () => {
-      this.props.dispatch(
-          updateTodo(() => {
-              this.props.dispatch(fetchTodos);
-          })
-      );
+  handleTodoChange = (e) => {
+    this.setState({
+      todoText: e.target.value
+    });
   };
 
   handleNewTodo = event => {
     if (event.key === "Enter") {
+      // Create a todo object
+      const todo = {
+        id: uuid.v4(),
+        value: this.state.todoText,
+        complete: false
+      };
       this.props.dispatch(
-          saveTodo(() => {
-              this.props.dispatch(fetchTodos);
-          })
+        saveTodo('', todo, () => {
+          this.props.dispatch(fetchTodos())
+        })
       );
     }
   };
@@ -49,17 +52,17 @@ class App extends Component {
     this.props.dispatch(
       deleteTodo(id, undefined, () => {
         // code will be executed if the remove is successful
-        this.props.dispatch(fetchTodos)
+        this.props.dispatch(fetchTodos())
       })
     );
   };
 
   clearComplete = () => {
-      this.props.dispatch(
-          deleteAllTodos(() => {
-              this.props.dispatch(fetchTodos)
-          })
-      );
+    this.props.dispatch(
+      deleteAllTodos(() => {
+        this.props.dispatch(fetchTodos)
+      })
+    );
   };
 
   markComplete = (e) => {
@@ -95,7 +98,7 @@ class App extends Component {
           <input type="text"
                  autoFocus
                  className="new-todo"
-                 value={this.state.currentTodo}
+                 value={this.state.todoText}
                  placeholder="What needs to be done?"
                  onKeyPress={this.handleNewTodo}
                  onChange={this.handleTodoChange}
