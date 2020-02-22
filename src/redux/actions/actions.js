@@ -1,5 +1,5 @@
 import {
-    FETCH_TODOS_BEGIN,
+    FETCH_TODOS,
     FETCH_TODOS_SUCCESS,
     FETCH_TODOS_FAILURE
 } from "../action-types";
@@ -9,7 +9,7 @@ import { TODOS_URL } from "../../utils/constants";
 
 export const fetchTodosStart = () => {
     return {
-        type: FETCH_TODOS_BEGIN
+        type: FETCH_TODOS
     };
 };
 

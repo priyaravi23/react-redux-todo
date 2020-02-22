@@ -6,7 +6,7 @@ import {dispatchfetchTodos} from "./redux/actions/actions";
 import {connect} from 'react-redux';
 import Todo from './todo';
 import get from 'lodash/get';
-import {deleteTodo, fetchTodos} from "./redux/actions/action-utility";
+import {saveTodo, deleteTodo, deleteAllTodos, fetchTodos, updateTodo} from "./redux/actions/action-utility";
 
 class App extends Component {
   state = {
@@ -27,24 +27,21 @@ class App extends Component {
     });
   };
 
-  handleTodoChange = event => {
-    this.setState({
-      currentTodo: event.target.value
-    });
+  handleTodoChange = () => {
+      this.props.dispatch(
+          updateTodo(() => {
+              this.props.dispatch(fetchTodos);
+          })
+      );
   };
 
   handleNewTodo = event => {
     if (event.key === "Enter") {
-      event.preventDefault();
-
-      const newItem = {
-        id: uuid.v4(),
-        value: this.state.currentTodo.slice()
-      };
-      this.setState({
-        todos: this.state.todos.concat(newItem),
-        currentTodo: ""
-      });
+      this.props.dispatch(
+          saveTodo(() => {
+              this.props.dispatch(fetchTodos);
+          })
+      );
     }
   };
 
@@ -58,15 +55,11 @@ class App extends Component {
   };
 
   clearComplete = () => {
-    const remainingTodos = this.state.todos.filter(todo => {
-      if (!todo.complete) {
-        return todo;
-      }
-    });
-
-    this.setState({
-      todos: remainingTodos
-    });
+      this.props.dispatch(
+          deleteAllTodos(() => {
+              this.props.dispatch(fetchTodos)
+          })
+      );
   };
 
   markComplete = (e) => {

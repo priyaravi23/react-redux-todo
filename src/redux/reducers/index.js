@@ -1,10 +1,7 @@
 import {
-  FETCH_TODOS_BEGIN,
+  FETCH_TODOS,
   FETCH_TODOS_SUCCESS,
-  FETCH_TODOS_FAILURE,
-  CREATE_TODO,
-  DELETE_TODO,
-  UPDATE_TODO
+  FETCH_TODOS_FAILURE
 } from "../action-types";
 
 import keyBy from 'lodash/keyBy';
@@ -24,7 +21,7 @@ const DEFAULT_TODOS_STATE = {
 
 export function todos(prevState = DEFAULT_TODOS_STATE, action) {
   switch (action.type) {
-    case FETCH_TODOS_BEGIN:
+    case FETCH_TODOS:
       return {
         ...prevState,
         fetchInProgress: true,
@@ -41,14 +38,6 @@ export function todos(prevState = DEFAULT_TODOS_STATE, action) {
         fetchInProgress: false,
         err: action.err,
         todos: {},
-      };
-    case CREATE_TODO:
-      return {
-        ...prevState,
-        todos: {
-          ...prevState.todos,
-          [action.todo.id]: action.todo
-        }
       };
 
     default:
